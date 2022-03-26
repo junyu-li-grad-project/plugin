@@ -1,0 +1,14 @@
+syntax = "proto3";
+package com.github.victor_leee.plugin;
+option go_package = "github.com/victor-leee/plugin";
+
+// Parameter refers to both the request parameters and the response paramter
+message Parameter {
+  bytes marshalled_param = 1;
+}
+
+// UnaryRPCRequest is a single RPC request object
+message UnaryRPCRequest {
+  string method = 1;
+  Parameter request_parameter = 2;
+}

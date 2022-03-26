@@ -1,0 +1,25 @@
+syntax = "proto3";
+package com.github.victor_leee.test;
+option go_package = "github.com/victor-leee/test";
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string greeting = 1;
+}
+
+message WocRequest {
+  string hello_world = 1;
+  int32 policia = 2;
+}
+
+message WocResponse {
+  HelloResponse response = 1;
+}
+
+service HelloService {
+  rpc sayHello(HelloRequest) returns (HelloResponse) {}
+  rpc sayWoc(WocRequest) returns (HelloResponse) {}
+}

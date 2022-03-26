@@ -1,0 +1,17 @@
+syntax = "proto3";
+package com.github.victor_leee.side_car;
+option go_package = "github.com/victor-leee/side-car";
+
+message BaseResponse {
+  enum Code {
+    CODE_SUCCESS = 0;
+    CODE_ERROR = 1;
+  }
+  Code code = 1;
+  string message = 2;
+}
+
+// GetConfigReq is used to fetch config data from config center
+message GetConfigReq {
+  string service_name = 1;
+}
