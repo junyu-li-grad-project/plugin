@@ -4,117 +4,45 @@
 package test
 
 import (
-	earth "github.com/victor-leee/earth"
-	earth1 "github.com/victor-leee/earth/github.com/victor-leee/earth"
-	plugin "github.com/victor-leee/plugin/github.com/victor-leee/plugin"
-	proto "google.golang.org/protobuf/proto"
-	io "io"
-	net "net"
+	context "context"
+	scrpc "github.com/victor-leee/scrpc"
 )
 
-func blockRead(reader io.Reader, size uint64) ([]byte, error) {
-	b := make([]byte, size)
-	already := 0
-	inc := 0
-	var err error
-	for uint64(already) < size {
-		if inc, err = reader.Read(b[already:]); err != nil {
-			return nil, err
-		}
-		already += inc
-	}
+var client scrpc.Client
 
-	return b, nil
-}
 func init() {
-	earth.InitConnManager(func(cname string) (earth.ConnPool, error) {
-		return earth.NewPool(earth.WithInitSize(10), earth.WithMaxSize(50), earth.WithFactory(func() (net.Conn, error) {
-			return net.Dial("unix", cname)
-		}))
-	})
+	client = scrpc.NewClient()
 }
 
 type HelloService interface {
-	SayHello(req *HelloRequest) (*HelloResponse, error)
-	SayWoc(req *WocRequest) (*HelloResponse, error)
+	SayHello(ctx context.Context, req *HelloRequest) (*HelloResponse, error)
+	SayWoc(ctx context.Context, req *WocRequest) (*HelloResponse, error)
 }
 
 type HelloServiceImpl struct {
 }
 
-func (*HelloServiceImpl) SayHello(req *HelloRequest) (*HelloResponse, error) {
-	b, _ := proto.Marshal(req)
-	protoResponse := &HelloResponse{}
-	outErr := earth.GlobalConnManager().Func("/tmp/sc.sock", func(conn net.Conn) error {
-		// block send & receive message
-		rpcReq := &plugin.UnaryRPCRequest{
-			Method: "SayHello",
-			RequestParameter: &plugin.Parameter{
-				MarshalledParam: b,
-			},
-		}
-		b, _ = proto.Marshal(rpcReq)
-		_, err := earth.FromProtoMessage(rpcReq, &earth1.Header{
-			SenderServiceName:   "github.com/victor-leee/caller",
-			ReceiverServiceName: "github.com/victor-leee/test",
-			MessageType:         earth1.Header_SIDE_CAR_PROXY,
-			TraceId:             "trace_id", // TODO
-		}).Write(conn)
-		if err != nil {
-			return err
-		}
-
-		response, err := earth.FromReader(conn, blockRead)
-		if err != nil {
-			return err
-		}
-		if err = proto.Unmarshal(response.Body, protoResponse); err != nil {
-			return err
-		}
-
-		return nil
+func (*HelloServiceImpl) SayHello(ctx context.Context, req *HelloRequest) (*HelloResponse, error) {
+	resp := &HelloResponse{}
+	err := client.UnaryRPCRequest(&scrpc.RequestContext{
+		Ctx:           ctx,
+		Req:           req,
+		ReqService:    "github.com/victor-leee/test",
+		ReqMethod:     "SayHello",
+		SenderService: "github.com/victor-leee/caller",
+		Resp:          resp,
 	})
-	if outErr != nil {
-		return nil, outErr
-	}
-
-	return protoResponse, nil
+	return resp, err
 }
-func (*HelloServiceImpl) SayWoc(req *WocRequest) (*HelloResponse, error) {
-	b, _ := proto.Marshal(req)
-	protoResponse := &HelloResponse{}
-	outErr := earth.GlobalConnManager().Func("/tmp/sc.sock", func(conn net.Conn) error {
-		// block send & receive message
-		rpcReq := &plugin.UnaryRPCRequest{
-			Method: "SayWoc",
-			RequestParameter: &plugin.Parameter{
-				MarshalledParam: b,
-			},
-		}
-		b, _ = proto.Marshal(rpcReq)
-		_, err := earth.FromProtoMessage(rpcReq, &earth1.Header{
-			SenderServiceName:   "github.com/victor-leee/caller",
-			ReceiverServiceName: "github.com/victor-leee/test",
-			MessageType:         earth1.Header_SIDE_CAR_PROXY,
-			TraceId:             "trace_id", // TODO
-		}).Write(conn)
-		if err != nil {
-			return err
-		}
-
-		response, err := earth.FromReader(conn, blockRead)
-		if err != nil {
-			return err
-		}
-		if err = proto.Unmarshal(response.Body, protoResponse); err != nil {
-			return err
-		}
-
-		return nil
+func (*HelloServiceImpl) SayWoc(ctx context.Context, req *WocRequest) (*HelloResponse, error) {
+	resp := &HelloResponse{}
+	err := client.UnaryRPCRequest(&scrpc.RequestContext{
+		Ctx:           ctx,
+		Req:           req,
+		ReqService:    "github.com/victor-leee/test",
+		ReqMethod:     "SayWoc",
+		SenderService: "github.com/victor-leee/caller",
+		Resp:          resp,
 	})
-	if outErr != nil {
-		return nil, outErr
-	}
-
-	return protoResponse, nil
+	return resp, err
 }

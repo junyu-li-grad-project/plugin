@@ -12,6 +12,8 @@ github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/victor-leee/earth v0.0.0-20220325030548-0028e99fc315 h1:C0cPIhXDpVg4NoI/OGEbNuTLgA69FrgIWcMhyUaHrzk=
 github.com/victor-leee/earth v0.0.0-20220325030548-0028e99fc315/go.mod h1:XeIVM01FFUiEmWQOXBzXHH0z0+5OsQCGHjROr92X8C0=
+github.com/victor-leee/scrpc v0.0.0-20220327110917-959f9801128a h1:fTLB9xgJC9w+LWs6olYqBPcLBkuHpHvI3e0fFbzFXHE=
+github.com/victor-leee/scrpc v0.0.0-20220327110917-959f9801128a/go.mod h1:9YXVYmrTkJ/sVjZ8Un42CCstQcYEZ1MdtSrD55+rrKc=
 golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 h1:YyJpGZS1sBuBCzLAR1VEpK193GlqGZbnPFnPV/5Rsb4=
 golang.org/x/sys v0.0.0-20191026070338-33540a1f6037/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 h1:OH54vjqzRWmbJ62fjuhxy7AxFFgoHN0/DPc/UrL8cAs=
