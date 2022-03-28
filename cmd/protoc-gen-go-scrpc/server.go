@@ -19,6 +19,10 @@ func generateServer(gen *protogen.Plugin, file *protogen.File) {
 	g.P(`func init() {
 	server = scrpc.NewServer()
 }`)
+	g.P()
+	g.P(`func GetServer() scrpc.Server {
+return server
+}`)
 
 	// generate services
 	for _, service := range file.Services {
