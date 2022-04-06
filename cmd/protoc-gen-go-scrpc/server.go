@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
@@ -16,9 +17,9 @@ func generateServer(gen *protogen.Plugin, file *protogen.File) {
 
 	// init ServerInterface
 	g.P("var server ", scrpcPkg.Ident("Server"))
-	g.P(`func init() {
-	server = scrpc.NewServer()
-}`)
+	g.P(fmt.Sprintf(`func init() {
+	server = scrpc.NewServer("%s")
+}`, convertGoPath2DNS(defaultCfg.Service)))
 	g.P()
 	g.P(`func GetServer() scrpc.Server {
 return server
@@ -28,6 +29,8 @@ return server
 	for _, service := range file.Services {
 		generateServerServices(g, service)
 	}
+	g.P()
+	generateConfigCenter(g)
 }
 
 func generateServerServices(g *protogen.GeneratedFile, serviceDef *protogen.Service) {

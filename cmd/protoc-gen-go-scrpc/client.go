@@ -26,6 +26,8 @@ client = scrpc.NewClient()
 	for _, service := range file.Services {
 		generateService(g, service)
 	}
+	g.P()
+	generateConfigCenter(g)
 }
 
 func generateService(g *protogen.GeneratedFile, serviceDef *protogen.Service) {
@@ -61,10 +63,10 @@ func generateBody(g *protogen.GeneratedFile, methodDef *protogen.Method) {
 err := client.UnaryRPCRequest(&scrpc.RequestContext{
 Ctx: ctx,
 Req: req,
-ReqService: %s,
+ReqService: "%s",
 ReqMethod: "%s",
 SenderService: "%s",
 Resp: resp,
-})`, methodDef.Output.GoIdent.GoName, file.GoImportPath, methodDef.GoName, defaultCfg.Service))
+})`, methodDef.Output.GoIdent.GoName, convertGoPath2DNS(file.GoImportPath.String()), methodDef.GoName, convertGoPath2DNS(defaultCfg.Service)))
 	g.P("return resp, err")
 }
